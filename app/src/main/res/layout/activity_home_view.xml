@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.logn.gobanggame.HomeViewActivity">
+
+    <com.logn.titlebar.TitleBar
+        android:id="@+id/title_bar_home"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/colorGrayBackGround"
+        app:titleBarColor="@color/colorBlackText"
+        app:titleBarText="@string/app_name" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/title_bar_home"
+        android:background="@color/colorBlackText" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/title_bar_home" />
+
+
+    <Button
+        android:id="@+id/btn_home_p2p"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="11dp"
+        android:layout_marginTop="22dp"
+        android:text="@string/person2person" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/btn_home_p2p"
+        android:layout_centerInParent="true"
+        android:text="@string/chooseModel"
+        android:textColor="@color/colorBlackText" />
+
+    <Button
+        android:id="@+id/btn_home_p2m"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_home_p2p"
+        android:layout_centerInParent="true"
+        android:text="@string/person2machine" />
+
+
+</RelativeLayout>
