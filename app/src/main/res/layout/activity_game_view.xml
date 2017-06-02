@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#3f3f3f"
     android:orientation="vertical">
 
-</LinearLayout>
+    <com.logn.gobanggame.views.GameView
+        android:layout_width="match_parent"
+        android:background="#ffffff"
+        android:layout_height="match_parent"></com.logn.gobanggame.views.GameView>
+
+</RelativeLayout>

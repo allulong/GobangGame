@@ -1,5 +1,6 @@
 package com.logn.gobanggame;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -40,6 +41,9 @@ public class HomeViewActivity extends AppCompatActivity {
             switch (v.getId()) {
                 case R.id.btn_home_p2p:
                     Toast.makeText(HomeViewActivity.this, "对弈模式", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent();
+                    intent.setClass(HomeViewActivity.this, GameViewActivity.class);
+                    startActivity(intent);
                     break;
                 case R.id.btn_home_p2m:
                     Toast.makeText(HomeViewActivity.this, "人机对战", Toast.LENGTH_SHORT).show();
