@@ -1,13 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#3f3f3f"
     android:orientation="vertical">
+
+    <com.logn.titlebar.TitleBar
+        android:id="@+id/title_bar_game_view"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/colorGrayBackGround"
+        app:titleBarColor="@color/colorBlackText"
+        app:titleBarText="@string/app_name"></com.logn.titlebar.TitleBar>
+
+    <ImageView
+        android:id="@+id/img_back_ground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/title_bar_game_view"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/icon_back_ground_desk" />
 
     <com.logn.gobanggame.views.GameView
         android:layout_width="match_parent"
-        android:background="#ffffff"
-        android:layout_height="match_parent"></com.logn.gobanggame.views.GameView>
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:background="#333f3f3f"></com.logn.gobanggame.views.GameView>
 
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/title_bar_game_view"
+        android:background="@color/colorBlackText" />
 </RelativeLayout>
