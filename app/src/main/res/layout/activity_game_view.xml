@@ -11,7 +11,7 @@
         android:layout_height="48dp"
         android:background="@color/colorGrayBackGround"
         app:titleBarColor="@color/colorBlackText"
-        app:titleBarText="@string/app_name"></com.logn.titlebar.TitleBar>
+        app:titleBarText="@string/person2person"></com.logn.titlebar.TitleBar>
 
     <ImageView
         android:id="@+id/img_back_ground"
@@ -21,11 +21,29 @@
         android:scaleType="centerCrop"
         android:src="@mipmap/icon_back_ground_desk" />
 
+    <Button
+        android:id="@+id/btn_restart_game_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_bar_game_view"
+        android:text="@string/restart" />
+
+    <Button
+        android:id="@+id/btn_reset_one_step"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_bar_game_view"
+        android:layout_toRightOf="@id/btn_restart_game_view"
+        android:text="@string/reset_one_step" />
+
     <com.logn.gobanggame.views.GameView
+        android:id="@+id/game_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:background="#333f3f3f"></com.logn.gobanggame.views.GameView>
+        android:layout_below="@id/btn_restart_game_view"
+        android:background="#333f3f3f">
+
+    </com.logn.gobanggame.views.GameView>
 
 
     <View
@@ -33,4 +51,12 @@
         android:layout_height="1dp"
         android:layout_below="@id/title_bar_game_view"
         android:background="@color/colorBlackText" />
+
+    <TextView
+        android:id="@+id/text_show"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="11dp" />
 </RelativeLayout>

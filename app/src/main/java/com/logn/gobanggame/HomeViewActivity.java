@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.logn.gobanggame.views.GameView;
 import com.logn.titlebar.TitleBar;
 
 public class HomeViewActivity extends AppCompatActivity {
@@ -41,12 +42,17 @@ public class HomeViewActivity extends AppCompatActivity {
             switch (v.getId()) {
                 case R.id.btn_home_p2p:
                     Toast.makeText(HomeViewActivity.this, "对弈模式", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent();
-                    intent.setClass(HomeViewActivity.this, GameViewActivity.class);
-                    startActivity(intent);
+                    Intent intent1 = new Intent();
+                    intent1.setClass(HomeViewActivity.this, GameViewActivity.class);
+                    intent1.putExtra(GameView.MODE, true);
+                    startActivity(intent1);
                     break;
                 case R.id.btn_home_p2m:
                     Toast.makeText(HomeViewActivity.this, "人机对战", Toast.LENGTH_SHORT).show();
+                    Intent intent2 = new Intent();
+                    intent2.setClass(HomeViewActivity.this, GameViewActivity.class);
+                    intent2.putExtra(GameView.MODE, false);
+                    startActivity(intent2);
                     break;
                 default:
                     Toast.makeText(HomeViewActivity.this, "...", Toast.LENGTH_SHORT).show();
