@@ -15,6 +15,7 @@ import com.logn.gobanggame.R;
 import com.logn.gobanggame.views.interfaces.ChessBoard;
 import com.logn.gobanggame.views.interfaces.IGames;
 import com.logn.gobanggame.views.interfaces.OnGameStateListener;
+import com.logn.gobanggame.views.utils.DFS;
 import com.logn.gobanggame.views.utils.PlayStrategy;
 
 import java.util.ArrayList;
@@ -22,6 +23,8 @@ import java.util.List;
 
 /**
  * Created by long on 2017/6/2.
+ * <p>
+ * 棋盘坐标x、y方向和手机x、y坐标一致
  */
 
 public class GameView extends ViewGroup implements IGames, ChessBoard {
@@ -116,6 +119,7 @@ public class GameView extends ViewGroup implements IGames, ChessBoard {
     private Bitmap mChessFlagBm;
 
     private PlayStrategy playStrategy;
+    private DFS dfs;
 
     public GameView(Context context) {
         this(context, null);
@@ -140,7 +144,6 @@ public class GameView extends ViewGroup implements IGames, ChessBoard {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         Log.e("流程", "onLayout");
-
     }
 
     @Override
@@ -336,6 +339,11 @@ public class GameView extends ViewGroup implements IGames, ChessBoard {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (gameOver) {
+            for (OnGameStateListener listener : onGameStateListeners) {
+                if (listener != null) {
+                    listener.changeState(gameOver, curColorIsWithe ? CHESS_BLACK : CHESS_WHITE);
+                }
+            }
             return false;
         }
         switch (event.getAction()) {
@@ -343,7 +351,7 @@ public class GameView extends ViewGroup implements IGames, ChessBoard {
                 //获取触坐标
                 int x = (int) event.getX();
                 int y = (int) event.getY();
-                Log.e("触摸的坐标：", "x:" + x + "\ty:" + y);
+//                Log.e("触摸的坐标：", "x:" + x + "\ty:" + y);
 
                 //将像素坐标转换为棋盘坐标，方向与手机像素坐标一直，并封装成坐标点
                 x = (int) (x / mGridWidth);
@@ -351,64 +359,16 @@ public class GameView extends ViewGroup implements IGames, ChessBoard {
 
                 Point point = new Point(x, y);
 
-                if (mChessBlackArray.contains(point) || mChessWhiteArray.contains(point)) {
-                    showPanel();
-                    return false;
-                }
-
-                if (!curColorIsWithe) {
-                    chessPanel[point.x][point.y] = CHESS_BLACK; //添加到棋盘里
-
-                    mChessBlackArray.add(point);
-                    if (checkWin(point)) {
-                        Log.e("游戏结束", curColorIsWithe + "--------------------赢了");
-                        gameOver = true;
-                    }
-                } else {
-                    chessPanel[point.x][point.y] = CHESS_WHITE;
-
-                    mChessWhiteArray.add(point);
-                    if (checkWin(point)) {
-                        Log.e("游戏结束", curColorIsWithe + "----------------------赢了");
-                        gameOver = true;
-                    }
-                }
-                for (OnGameStateListener listener : onGameStateListeners) {
-                    if (listener != null) {
-                        listener.changeState(gameOver, curColorIsWithe ? CHESS_WHITE : CHESS_BLACK);
-                    }
-                }
-
-                mCountChess++;  //在棋盘上增在一步棋子
-
-                curColorIsWithe = !curColorIsWithe;
-
-                //通知视图变化
-                invalidate();
+                setChessForPerson(point, curColorIsWithe ? CHESS_WHITE : CHESS_BLACK);
 
                 if (!mModeIsP2P && !gameOver) {
-                    Point mPoint = playStrategy.getNextStep(this, curColorIsWithe ? CHESS_WHITE : CHESS_BLACK, mCountChess, point);
-                    if (curColorIsWithe) {
-                        mChessWhiteArray.add(mPoint);
-                    } else {
-                        mChessBlackArray.add(mPoint);
-                    }
-
-                    for (OnGameStateListener listener : onGameStateListeners) {
-                        if (listener != null) {
-                            listener.changeState(gameOver, curColorIsWithe ? CHESS_WHITE : CHESS_BLACK);
-                        }
-                    }
-                    mCountChess++;
-                    curColorIsWithe = !curColorIsWithe;
-                    invalidate();
+//                    Point mPoint = playStrategy.getNextStep(this, curColorIsWithe ? CHESS_WHITE : CHESS_BLACK, mCountChess, point);
+                    Point mPoint = dfs.maxmin(chessPanel, 4);
+                    setChess(mPoint, CHESS_BLACK);
                 }
-
-                Log.e("~~~~~~~~~~~~~~~~~~~~s", "s");
 
                 break;
             default:
-                Log.e("棋盘视图", "触摸");
         }
         return true;
     }
@@ -525,18 +485,64 @@ public class GameView extends ViewGroup implements IGames, ChessBoard {
         mModeIsP2P = true;
 
         playStrategy = new PlayStrategy();
+        dfs = new DFS();
 
     }
 
+    private void setChessForPerson(Point point, int chessType) {
+        int x = point.x;
+        int y = point.y;
+        if (chessPanel[x][y] != CHESS_BLANK) {
+            Log.e("错误-重复下子", "位置 (" + x + "," + y + ") 已经有棋子了");
+            showPanel();
+        } else {
+            setChess(point, chessType);
+        }
+    }
+
+    /**
+     * 在固定位置下棋子，并检查是否结束
+     *
+     * @param point     下棋子的位置，必定不为空
+     * @param chessType 棋子类型，只能为黑白两种类型
+     */
+    private void setChess(Point point, int chessType) {
+        if (chessType == CHESS_BLACK) {
+            mChessBlackArray.add(point);
+        } else if (chessType == CHESS_WHITE) {
+            mChessWhiteArray.add(point);
+        } else {
+            Log.e("棋子类型错误", "企图下的棋子类型为：" + chessType);
+            return;
+        }
+        chessPanel[point.x][point.y] = chessType;
+        mCountChess++;
+        curColorIsWithe = !curColorIsWithe;
+
+        invalidate();   //更新棋盘界面
+
+        if (gameOver = checkWin(point)) {//游戏结束，调用监听器
+
+            for (OnGameStateListener listener : onGameStateListeners) {
+                if (listener != null) {
+                    listener.changeState(gameOver, curColorIsWithe ? CHESS_BLACK : CHESS_WHITE);
+                }
+            }
+
+        }
+
+    }
+
+    /**
+     * 模式确定后，如果为人机模式则需要初始化第一棋子
+     */
     @Override
     public void start() {
 
-        if (!mModeIsP2P) {
-            Point point = playStrategy.getNextStep(this, curColorIsWithe ? CHESS_WHITE : CHESS_BLACK, mCountChess, null);
-            mChessBlackArray.add(point);
-
-            mCountChess++;
-            curColorIsWithe = !curColorIsWithe;
+        if (!mModeIsP2P) {//获得最合适的位置后下子
+//            Point point = playStrategy.getNextStep(this, curColorIsWithe ? CHESS_WHITE : CHESS_BLACK, mCountChess, null);
+            Point point = dfs.maxmin(chessPanel, 4);
+            setChess(point, curColorIsWithe ? CHESS_WHITE : CHESS_BLACK);
         }
 
     }
@@ -587,6 +593,7 @@ public class GameView extends ViewGroup implements IGames, ChessBoard {
         } else {
             int index = 0;
             Point point = null;
+            //撤销黑棋和白棋
 
 
         }

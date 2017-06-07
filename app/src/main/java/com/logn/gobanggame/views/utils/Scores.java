@@ -9,17 +9,17 @@ package com.logn.gobanggame.views.utils;
  */
 
 public class Scores {
-    private static final int ONE = 10;
-    private static final int TWO = 100;
-    private static final int THREE = 1000;
-    private static final int FOUR = 100000;
-    private static final int FIVE = 1000000;
+    public static final int ONE = 10;
+    public static final int TWO = 100;
+    public static final int THREE = 1000;
+    public static final int FOUR = 100000;
+    public static final int FIVE = 1000000;
 
-    private static final int BLOCKED_ONE = 1;
-    private static final int BLOCKED_TWO = 10;
-    private static final int BLOCKED_THREE = 100;
-    private static final int BLOCKED_FOUR = 10000;
+    public static final int BLOCKED_ONE = 1;
+    public static final int BLOCKED_TWO = 10;
+    public static final int BLOCKED_THREE = 100;
+    public static final int BLOCKED_FOUR = 10000;
 
-    private static final int MAX = FIVE * 10;
-    private static final int MIN = MAX * -1;
+    public static final int MAX = FIVE * 10;
+    public static final int MIN = MAX * -1;
 }
