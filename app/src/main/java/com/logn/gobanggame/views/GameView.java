@@ -37,10 +37,6 @@ public class GameView extends ViewGroup implements IGames, ChessBoard {
     private static final float CHESS_SCALE_WIDTH = 3.0f / 4;
 
     /**
-     * -1代表超出棋盘范围
-     */
-    public static final int CHESS_VIRTUAL = -1;
-    /**
      * 0代表无棋子
      */
     public static final int CHESS_BLANK = 0;
@@ -359,11 +355,12 @@ public class GameView extends ViewGroup implements IGames, ChessBoard {
 
                 Point point = new Point(x, y);
 
-                setChessForPerson(point, curColorIsWithe ? CHESS_WHITE : CHESS_BLACK);
+                boolean setSucceed = setChessForPerson(point, curColorIsWithe ? CHESS_WHITE : CHESS_BLACK);
 
-                if (!mModeIsP2P && !gameOver) {
-//                    Point mPoint = playStrategy.getNextStep(this, curColorIsWithe ? CHESS_WHITE : CHESS_BLACK, mCountChess, point);
-                    Point mPoint = dfs.maxmin(chessPanel, 4);
+                if (setSucceed && !mModeIsP2P && !gameOver) {
+                    Point mPoint = playStrategy.getNextStep(chessPanel, curColorIsWithe ? CHESS_WHITE : CHESS_BLACK, mCountChess, point);
+                    Log.e("电脑下的位置", mCountChess + ":" + mPoint.toString());
+//                    Point mPoint = dfs.maxmin(chessPanel, 4);
                     setChess(mPoint, CHESS_BLACK);
                 }
 
@@ -489,14 +486,16 @@ public class GameView extends ViewGroup implements IGames, ChessBoard {
 
     }
 
-    private void setChessForPerson(Point point, int chessType) {
+    private boolean setChessForPerson(Point point, int chessType) {
         int x = point.x;
         int y = point.y;
         if (chessPanel[x][y] != CHESS_BLANK) {
             Log.e("错误-重复下子", "位置 (" + x + "," + y + ") 已经有棋子了");
             showPanel();
+            return false;
         } else {
             setChess(point, chessType);
+            return true;
         }
     }
 
@@ -540,8 +539,8 @@ public class GameView extends ViewGroup implements IGames, ChessBoard {
     public void start() {
 
         if (!mModeIsP2P) {//获得最合适的位置后下子
-//            Point point = playStrategy.getNextStep(this, curColorIsWithe ? CHESS_WHITE : CHESS_BLACK, mCountChess, null);
-            Point point = dfs.maxmin(chessPanel, 4);
+            Point point = playStrategy.getNextStep(chessPanel, curColorIsWithe ? CHESS_WHITE : CHESS_BLACK, mCountChess, null);
+            //               Point point = dfs.maxmin(chessPanel, 4);
             setChess(point, curColorIsWithe ? CHESS_WHITE : CHESS_BLACK);
         }
 

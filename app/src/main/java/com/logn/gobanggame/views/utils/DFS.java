@@ -15,25 +15,39 @@ import java.util.Random;
 
 public class DFS {
 
+    //剪枝的直接节点
     private int totlePoints;
     int ABCut = 0;//AB剪枝次数
 
-    public Point maxmin(int[][] chessPanel, int deep) {
+
+    /**
+     * 根据棋子的分布，选出最合适电脑下子的位置
+     *
+     * @param chessPanel
+     * @param deep       需要为偶数
+     * @return 电脑最后选择的位置
+     */
+    public Point maxmin(int[][] chessPanel, int deep) { //属于max层
         ABCut = 0;
         totlePoints = 0;
         int best = Scores.MIN;
+        //获得棋盘上一组有邻居且最合适的点的集合，所有点肯定还没有棋子
         List<Point> points = generator(chessPanel, deep);
+        //筛选出的最合适的点
         List<Point> bestPoints = new ArrayList<>();
 
-        if (points.size() == 0) {
-            Log.e("fuck", "000000");
+        if (points.size() == 0) {   //电脑默认为先手，第一步的时候棋盘上没有棋子，会返回空数组
+            //第一步默认下在天元位置
+            Log.e("电脑的第一步棋子", "天元点");
             return new Point(7, 7);
         }
 
+        //遍历所有合适的点，进一步筛选
         for (int i = 0; i < points.size(); i++) {
             Point point = points.get(i);
             chessPanel[point.x][point.y] = ChessPanel.CHESS_BLACK;  //尝试下一个黑子，默认电脑下黑子
 
+            //在min层返回最好的值
             int v = min(chessPanel, deep - 1, Scores.MAX, best > Scores.MIN ? best : Scores.MIN);//开始找最大值
             if (v == best) {
                 bestPoints.add(point);
@@ -65,9 +79,18 @@ public class DFS {
         return bp;
     }
 
+    /**
+     * min层
+     *
+     * @param chessPanel
+     * @param deep
+     * @param alpha
+     * @param beta
+     * @return
+     */
     private int min(int[][] chessPanel, int deep, int alpha, int beta) {
         Log.e("FLAG_MIN", "深度：" + deep + "");
-        int v = evaluate(chessPanel);
+        int v = evaluate(chessPanel);   //因为在上一层max层已经在一个位置上尝试下一个棋子了，现在重新计算可以下的棋子的集合
         totlePoints++;
         if (deep <= 0 || win(chessPanel) != GameView.CHESS_BLANK) {
             return v;
@@ -98,7 +121,9 @@ public class DFS {
         int v = evaluate(chessPanel);
         totlePoints++;
 
-        if (deep <= 0 || win(chessPanel) != GameView.BLANK) {//到达深度或者此位置不为空，则跳出
+
+        if (deep <= 0 || (win(chessPanel) != GameView.CHESS_BLANK)) {//到达深度或者此位置不为空，则跳出
+//            Log.e("FLAG——什么鬼", "深度：" + deep);
             return v;
         }
 
@@ -122,7 +147,13 @@ public class DFS {
         return best;
     }
 
-    private int win(int[][] chessPanel) {
+    /**
+     * 检查是否有一方已经获胜
+     *
+     * @param chessPanel
+     * @return 有获胜方作为放回获胜方的棋子类型，否则返回CHESS_BLANK（0）
+     */
+    public int win(int[][] chessPanel) {
         List<List<Integer>> rows = flat(chessPanel);
 
         for (int i = 0; i < rows.size(); i++) {
@@ -138,13 +169,41 @@ public class DFS {
         return GameView.CHESS_BLANK;
     }
 
+    /**
+     * 评价整个棋盘
+     *
+     * @param chessPanel
+     * @return
+     */
     private int evaluate(int[][] chessPanel) {
         List<List<Integer>> rows = flat(chessPanel);
+//        show(rows);
         int humScore = eRows(rows, GameView.CHESS_WHITE);
         int comScore = eRows(rows, GameView.CHESS_BLACK);
         return comScore - humScore;
     }
 
+    private void show(List<List<Integer>> rows) {
+        String s = ".\n";
+        if (rows != null) {
+            for (List<Integer> ps : rows) {
+                for (Integer i : ps) {
+                    s += "\t" + i;
+                }
+                s += ";\n";
+            }
+        }
+        Log.e("显示展开的棋盘：", "" + s);
+    }
+
+
+    /**
+     * 将展开的棋盘分布的每一个数组都评分
+     *
+     * @param rows
+     * @param chessType
+     * @return
+     */
     private int eRows(List<List<Integer>> rows, int chessType) {
         int r = 0;
         for (int i = 0; i < rows.size(); i++) {
@@ -153,20 +212,26 @@ public class DFS {
         return r;
     }
 
+    /**
+     * @param lines
+     * @param chessType
+     * @return
+     */
     private int eRow(List<Integer> lines, int chessType) {
         int count = 0;
         int block = 0;
         int value = 0;
         for (int i = 0; i < lines.size(); i++) {
-            if (lines.get(i) == chessType) {
+            if (lines.get(i) == chessType) {//找到第一个与chessType同类型的棋子
                 count = 1;
                 block = 0;
-                if (i == 0) {
+                if (i == 0) {//如果第一个棋子在位置0，则处于边界
                     block = 1;
-                } else if (lines.get(i) == chessType) {
+                } else if (lines.get(i - 1) != GameView.CHESS_BLANK) {  //前一个不为空，则肯定是其他类型的棋子
                     block = 1;
                 }
 
+                //从i+1开始寻找同类型的棋子连续数量
                 for (i = i + 1; i < lines.size(); i++) {
                     if (lines.get(i) == chessType) {
                         count++;
@@ -462,6 +527,13 @@ public class DFS {
     }
 
 
+    /**
+     * 根据棋盘分布，寻找有邻居的点的集合
+     *
+     * @param chessPanel
+     * @param deep
+     * @return 返回位置数组
+     */
     public List<Point> generator(int[][] chessPanel, int deep) {
         List<Point> neighbors = new ArrayList<>();
         List<Point> nextNeighbors = new ArrayList<>();
@@ -470,78 +542,90 @@ public class DFS {
         List<Point> twoThrees = null;
         List<Point> threes = null;
         List<Point> twos = null;
-        Log.e("遍历邻居", "深度：" + deep);
+        Log.e("遍历棋盘，寻找有邻居的点", "深度：" + deep);
         for (int i = 0; i < 15; i++) {
             for (int j = 0; j < 15; j++) {
                 if (chessPanel[i][j] == GameView.CHESS_BLANK) { //此位置必须为空
                     Point point = new Point(i, j);
                     if (hasNeighbor(chessPanel, point, 1, 1)) { //必须有邻居
+                        // 根据点的位置和棋子类型获得此位置的分数，并根据分数筛选返回的点
                         int scoreHum = scorePoint(chessPanel, point, GameView.CHESS_WHITE);
                         int scoreCom = scorePoint(chessPanel, point, GameView.CHESS_BLACK);
 
-                        if (scoreCom >= Scores.FIVE) {  //电脑能成五元组，将其他的删掉并且只返回这个点
-                            Log.e("FLAG_TUPLES", "电脑5-" + point.toString() + "   ::" + scoreCom);
+                        if (scoreCom >= Scores.FIVE) {
+                            //电脑能成五元组，将其他的删掉并且只返回这个点
+                            if (deep == 4)
+                                Log.e("FLAG_TUPLES", "电脑5-" + point.toString() + "   ::" + scoreCom);
                             neighbors.clear();
-                            nextNeighbors.clear();
                             neighbors.add(point);
                             return neighbors;
                         } else if (scoreHum >= Scores.FIVE) {//要是玩家能成五元组，加入到五元组数列中，但是不要现在返回，电脑还可能直接成五元组
 
-                            Log.e("FLAG_TUPLES", "玩家5-" + point.toString() + "   ::" + scoreHum);
+                            if (deep == 4)
+                                Log.e("FLAG_TUPLES", "玩家5-" + point.toString() + "   ::" + scoreHum);
                             if (fives == null) {
                                 fives = new ArrayList<>();
                             }
                             fives.add(point);
                         } else if (scoreCom >= Scores.FOUR) {
-                            Log.e("FLAG_TUPLES", "电脑4-" + point.toString() + "   ::" + scoreCom);
+                            if (deep == 4)
+                                Log.e("FLAG_TUPLES", "电脑4-" + point.toString() + "   ::" + scoreCom);
                             if (fours == null) {
                                 fours = new ArrayList<>();
                             }
                             fours.add(0, point);
                         } else if (scoreHum >= Scores.FOUR) {
-                            Log.e("FLAG_TUPLES", "玩家4-" + point.toString() + "   ::" + scoreHum);
+                            if (deep == 4)
+                                Log.e("FLAG_TUPLES", "玩家4-" + point.toString() + "   ::" + scoreHum);
                             if (fours == null) {
                                 fours = new ArrayList<>();
                             }
                             fours.add(point);
                         } else if (scoreCom >= 2 * Scores.THREE) {//双三
-                            Log.e("FLAG_TUPLES", "电脑23-" + point.toString() + "   ::" + scoreCom);
+                            if (deep == 4)
+                                Log.e("FLAG_TUPLES", "电脑23-" + point.toString() + "   ::" + scoreCom);
                             if (twoThrees == null) {
                                 twoThrees = new ArrayList<>();
                             }
                             twoThrees.add(0, point);
                         } else if (scoreHum >= 2 * Scores.THREE) {//双三
-                            Log.e("FLAG_TUPLES", "玩家23-" + point.toString() + "   ::" + scoreHum);
+                            if (deep == 4)
+                                Log.e("FLAG_TUPLES", "玩家23-" + point.toString() + "   ::" + scoreHum);
                             if (twoThrees == null) {
                                 twoThrees = new ArrayList<>();
                             }
                             twoThrees.add(point);
                         } else if (scoreCom >= Scores.THREE) {
-                            Log.e("FLAG_TUPLES", "电脑3-" + point.toString() + "   ::" + scoreCom);
+                            if (deep == 4)
+                                Log.e("FLAG_TUPLES", "电脑3-" + point.toString() + "   ::" + scoreCom);
                             if (threes == null) {
                                 threes = new ArrayList<>();
                             }
                             threes.add(0, point);
                         } else if (scoreHum >= Scores.THREE) {
-                            Log.e("FLAG_TUPLES", "玩家3-" + point.toString() + "   ::" + scoreHum);
+                            if (deep == 4)
+                                Log.e("FLAG_TUPLES", "玩家3-" + point.toString() + "   ::" + scoreHum);
                             if (threes == null) {
                                 threes = new ArrayList<>();
                             }
                             threes.add(point);
                         } else if (scoreCom >= Scores.TWO) {
-                            Log.e("FLAG_TUPLES", "电脑2-" + point.toString() + "   ::" + scoreCom);
+                            if (deep == 4)
+                                Log.e("FLAG_TUPLES", "电脑2-" + point.toString() + "   ::" + scoreCom);
                             if (twos == null) {
                                 twos = new ArrayList<>();
                             }
                             twos.add(0, point);
                         } else if (scoreHum >= Scores.TWO) {
-                            Log.e("FLAG_TUPLES", "玩家2-" + point.toString() + "   ::" + scoreHum);
+                            if (deep == 4)
+                                Log.e("FLAG_TUPLES", "玩家2-" + point.toString() + "   ::" + scoreHum);
                             if (twos == null) {
                                 twos = new ArrayList<>();
                             }
                             twos.add(point);
                         } else {
-                            Log.e("FLAG_TUPLES", "其他0-" + point.toString() + "   ::" + scoreHum + "   ::" + scoreCom);
+                            if (deep == 4)
+                                Log.e("FLAG_TUPLES", "其他0-" + point.toString() + "   ::" + scoreHum + "   ::" + scoreCom);
                             neighbors.add(point);
                         }
                     } else if (deep >= 2 && hasNeighbor(chessPanel, point, 2, 2)) {
