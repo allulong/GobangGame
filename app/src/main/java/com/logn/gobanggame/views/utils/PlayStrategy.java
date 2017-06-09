@@ -114,16 +114,16 @@ public class PlayStrategy {
             //将评分表改为防守模式
         }
         //更新评分表
-//        updateScoreTable(chessPanel, prevStep, chessType == GameView.CHESS_BLACK ? GameView.CHESS_BLACK : GameView.CHESS_WHITE);
-        updateScoreHum(chessPanel);
-        updateScoreCom(chessPanel);
+        updateScoreTable(chessPanel, prevStep, chessType == GameView.CHESS_BLACK ? GameView.CHESS_BLACK : GameView.CHESS_WHITE);
+//        updateScoreHum(chessPanel);
+//        updateScoreCom(chessPanel);
         //寻找最优位置
         showScoreTable();
         Point bestPos = findBestPos(chessPanel, chessType);
         //更新评分表
-//        updateScoreTable(chessPanel, bestPos, chessType);
-        updateScoreHum(chessPanel);
-        updateScoreCom(chessPanel);
+        updateScoreTable(chessPanel, bestPos, chessType);
+//        updateScoreHum(chessPanel);
+//        updateScoreCom(chessPanel);
         return bestPos;
     }
 
