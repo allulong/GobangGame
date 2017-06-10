@@ -110,7 +110,7 @@ public class GameView extends ViewGroup implements IGames {
     /**
      * 拿到图片
      */
-    private Bitmap mChessWhithBm;
+    private Bitmap mChessWhiteBm;
     private Bitmap mChessBlackBm;
     private Bitmap mChessFlagBm;
 
@@ -127,23 +127,15 @@ public class GameView extends ViewGroup implements IGames {
     public GameView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
-        initView();
         initPaint();
-    }
-
-
-    private void initView() {
-        mPaint = new Paint();
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        Log.e("流程", "onLayout");
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        Log.e("流程", "onMeasure");
         //获取高宽值
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
@@ -176,7 +168,6 @@ public class GameView extends ViewGroup implements IGames {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        Log.e("流程", "onSizeChanged");
 
         //拿到棋盘宽度
         mPanelWidth = w;
@@ -188,13 +179,12 @@ public class GameView extends ViewGroup implements IGames {
 
         //设置棋子的大小
         mChessBlackBm = Bitmap.createScaledBitmap(mChessBlackBm, chessWidth, chessWidth, false);
-        mChessWhithBm = Bitmap.createScaledBitmap(mChessWhithBm, chessWidth, chessWidth, false);
+        mChessWhiteBm = Bitmap.createScaledBitmap(mChessWhiteBm, chessWidth, chessWidth, false);
         mChessFlagBm = Bitmap.createScaledBitmap(mChessFlagBm, chessWidth, chessWidth, false);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Log.e("流程", "onDraw");
         super.onDraw(canvas);
         drawLine(canvas);
         drawDots(canvas);
@@ -242,8 +232,6 @@ public class GameView extends ViewGroup implements IGames {
             canvas.drawLine(startX, y, endX, y, mPaint);
             //绘制纵
             canvas.drawLine(y, startX, y, endX, mPaint);
-
-//            Log.e("坐标", "" + startX + "::" + endX + "::" + y);
         }
 
     }
@@ -291,12 +279,11 @@ public class GameView extends ViewGroup implements IGames {
         Point point = null;
         for (int i = 0; i < mChessWhiteArray.size(); i++) {
             point = mChessWhiteArray.get(i);
-            canvas.drawBitmap(mChessWhithBm, mGridWidth * (1.0f / 4 * 0.5f + point.x), mGridWidth * (1.0f / 4 * 0.5f + point.y), null);
+            canvas.drawBitmap(mChessWhiteBm, mGridWidth * (1.0f / 4 * 0.5f + point.x), mGridWidth * (1.0f / 4 * 0.5f + point.y), null);
         }
         //绘画黑棋
         for (int i = 0; i < mChessBlackArray.size(); i++) {
             point = mChessBlackArray.get(i);
-            Log.e("为什么蹦呢：：：：：", "");
             canvas.drawBitmap(mChessBlackBm, mGridWidth * (1.0f / 4 * 0.5f + point.x), mGridWidth * (1.0f / 4 * 0.5f + point.y), null);
         }
     }
@@ -346,7 +333,6 @@ public class GameView extends ViewGroup implements IGames {
                 //获取触坐标
                 int x = (int) event.getX();
                 int y = (int) event.getY();
-//                Log.e("触摸的坐标：", "x:" + x + "\ty:" + y);
 
                 //将像素坐标转换为棋盘坐标，方向与手机像素坐标一直，并封装成坐标点
                 x = (int) (x / mGridWidth);
@@ -358,8 +344,6 @@ public class GameView extends ViewGroup implements IGames {
 
                 if (setSucceed && !mModeIsP2P && !gameOver) {
                     Point mPoint = playStrategy.getNextStep(chessPanel, curColorIsWithe ? CHESS_WHITE : CHESS_BLACK, mCountChess, point);
-                    Log.e("电脑下的位置", mCountChess + ":" + mPoint.toString());
-//                    Point mPoint = dfs.maxmin(chessPanel, 4);
                     setChess(mPoint, CHESS_BLACK);
 
                     resetCount = 1;
@@ -473,7 +457,7 @@ public class GameView extends ViewGroup implements IGames {
         onGameStateListeners = new ArrayList<>();
 
         mChessBlackBm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_chess_black);
-        mChessWhithBm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_chess_white);
+        mChessWhiteBm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_chess_white);
         mChessFlagBm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_chess_red_dot);
 
         curColorIsWithe = false;
@@ -484,14 +468,15 @@ public class GameView extends ViewGroup implements IGames {
 
         playStrategy = new PlayStrategy();
 
+        mPaint = new Paint();
     }
 
     private boolean setChessForPerson(Point point, int chessType) {
         int x = point.x;
         int y = point.y;
         if (chessPanel[x][y] != CHESS_BLANK) {
-            Log.e("错误-重复下子", "位置 (" + x + "," + y + ") 已经有棋子了");
-            showPanel();
+//            Log.e("错误-重复下子", "位置 (" + x + "," + y + ") 已经有棋子了");
+//            showPanel();
             return false;
         } else {
             setChess(point, chessType);
@@ -511,7 +496,7 @@ public class GameView extends ViewGroup implements IGames {
         } else if (chessType == CHESS_WHITE) {
             mChessWhiteArray.add(point);
         } else {
-            Log.e("棋子类型错误", "企图下的棋子类型为：" + chessType);
+//            Log.e("棋子类型错误", "企图下的棋子类型为：" + chessType);
             return;
         }
         chessPanel[point.x][point.y] = chessType;
