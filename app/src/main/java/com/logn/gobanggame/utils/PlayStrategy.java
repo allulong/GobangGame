@@ -1,4 +1,4 @@
-package com.logn.gobanggame.views.utils;
+package com.logn.gobanggame.utils;
 
 import android.graphics.Point;
 import android.util.Log;

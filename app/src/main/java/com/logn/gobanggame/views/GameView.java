@@ -12,11 +12,9 @@ import android.view.MotionEvent;
 import android.view.ViewGroup;
 
 import com.logn.gobanggame.R;
-import com.logn.gobanggame.views.interfaces.ChessBoard;
 import com.logn.gobanggame.views.interfaces.IGames;
 import com.logn.gobanggame.views.interfaces.OnGameStateListener;
-import com.logn.gobanggame.views.utils.DFS;
-import com.logn.gobanggame.views.utils.PlayStrategy;
+import com.logn.gobanggame.utils.PlayStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +25,7 @@ import java.util.List;
  * 棋盘坐标x、y方向和手机x、y坐标一致
  */
 
-public class GameView extends ViewGroup implements IGames, ChessBoard {
+public class GameView extends ViewGroup implements IGames {
 
     public static final String MODE = "mode";
 
@@ -117,7 +115,6 @@ public class GameView extends ViewGroup implements IGames, ChessBoard {
     private Bitmap mChessFlagBm;
 
     private PlayStrategy playStrategy;
-    private DFS dfs;
 
     public GameView(Context context) {
         this(context, null);
@@ -486,7 +483,6 @@ public class GameView extends ViewGroup implements IGames, ChessBoard {
         mModeIsP2P = true;
 
         playStrategy = new PlayStrategy();
-        dfs = new DFS();
 
     }
 
@@ -644,8 +640,4 @@ public class GameView extends ViewGroup implements IGames, ChessBoard {
         return null;
     }
 
-    @Override
-    public int getPointState(int x, int y) {
-        return chessPanel[x][y];
-    }
 }

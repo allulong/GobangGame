@@ -29,5 +29,4 @@ public interface IGames {
      * 停止游戏
      */
     void stop();
-//    int getScore();
 }
