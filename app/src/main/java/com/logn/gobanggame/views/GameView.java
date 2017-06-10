@@ -7,17 +7,21 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 
 import com.logn.gobanggame.R;
+import com.logn.gobanggame.utils.ChessJudger;
+import com.logn.gobanggame.utils.PlayStrategy;
 import com.logn.gobanggame.views.interfaces.IGames;
 import com.logn.gobanggame.views.interfaces.OnGameStateListener;
-import com.logn.gobanggame.utils.PlayStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.logn.gobanggame.utils.ChessType.CHESS_BLACK;
+import static com.logn.gobanggame.utils.ChessType.CHESS_BLANK;
+import static com.logn.gobanggame.utils.ChessType.CHESS_WHITE;
 
 /**
  * Created by long on 2017/6/2.
@@ -35,37 +39,10 @@ public class GameView extends ViewGroup implements IGames {
     private static final float CHESS_SCALE_WIDTH = 3.0f / 4;
 
     /**
-     * 0代表无棋子
-     */
-    public static final int CHESS_BLANK = 0;
-    /**
-     * 1代表黑棋子
-     */
-    public static final int CHESS_BLACK = 1;
-    /**
-     * 2代表白棋子
-     */
-    public static final int CHESS_WHITE = 2;
-    /**
      * 整个棋盘的线条数量
      */
     private static final int MAX_LINE = 15;
 
-
-    public static final int BLANK = 3;
-    public static final int B = 1 + BLANK;
-    public static final int BB = 2 + BLANK;
-    public static final int BBB = 3 + BLANK;
-    public static final int BBBB = 4 + BLANK;
-
-    public static final int W = 5 + BLANK;
-    public static final int WW = 6 + BLANK;
-    public static final int WWW = 7 + BLANK;
-    public static final int WWWW = 8 + BLANK;
-
-
-    public static final int VIRTUAL = 9 + BLANK;
-    public static final int POLLUTED = 10 + BLANK;
 
     private boolean curColorIsWithe = false;//正准备下的棋子是否是白色
 
@@ -77,7 +54,7 @@ public class GameView extends ViewGroup implements IGames {
 
     private int resetCount = 1;
 
-    public void setmModeIsP2P(boolean mModeIsP2P) {
+    public void setModeIsP2P(boolean mModeIsP2P) {
         this.mModeIsP2P = mModeIsP2P;
         start();
     }
@@ -140,16 +117,16 @@ public class GameView extends ViewGroup implements IGames {
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
 
-        int hightSize = MeasureSpec.getSize(heightMeasureSpec);
-        int hightMode = MeasureSpec.getMode(heightMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
 
         //拿到宽和高的最小值，也就是宽
         int width = Math.min(widthSize, heightMeasureSpec);
 
         //根据测量模式细节处理
         if (widthMode == MeasureSpec.UNSPECIFIED) {
-            width = hightSize;
-        } else if (hightMode == MeasureSpec.UNSPECIFIED) {
+            width = heightSize;
+        } else if (heightMode == MeasureSpec.UNSPECIFIED) {
             width = widthSize;
         }
 
@@ -355,83 +332,6 @@ public class GameView extends ViewGroup implements IGames {
         return true;
     }
 
-    private void showPanel() {
-        String result = "~\n";
-        for (int i = 0; i < MAX_LINE; i++) {
-            for (int j = 0; j < MAX_LINE; j++) {
-                result += chessPanel[i][j] + "   ";
-            }
-            result += "\n";
-        }
-        Log.e("显示棋盘情况", "" + result);
-    }
-
-    /**
-     * @param point
-     * @return
-     */
-    private boolean checkWin(Point point) {
-        //从两条阴线和两条阳线中，距离为4的棋子内判断是否有五元组，如果有就返回true
-        //水平方向
-        int count = 0;
-        int curColor = chessPanel[point.x][point.y];
-        for (int i = point.x - 4; i <= point.x + 4; i++) {
-            if (i >= 0 && i < MAX_LINE) {
-                if (chessPanel[i][point.y] == curColor) {
-                    count++;
-                } else {
-                    count = 0;
-                }
-            }
-            if (count == 5) {
-                return true;
-            }
-        }
-        //竖直方向
-        count = 0;
-        for (int i = point.y - 4; i <= point.y + 4; i++) {
-            if (i >= 0 && i < MAX_LINE) {
-                if (chessPanel[point.x][i] == curColor) {
-                    count++;
-                } else {
-                    count = 0;
-                }
-            }
-            if (count == 5) {
-                return true;
-            }
-        }
-        //反斜线方向
-        count = 0;
-        for (int i = point.x - 4, j = point.y - 4; i <= point.x + 4 && j <= point.y + 4; i++, j++) {
-            if (i >= 0 && i < MAX_LINE && j >= 0 && j < MAX_LINE) {
-                if (chessPanel[i][j] == curColor) {
-                    count++;
-                } else {
-                    count = 0;
-                }
-            }
-            if (count == 5) {
-                return true;
-            }
-        }
-        //斜线方向
-        count = 0;
-        for (int i = point.x + 4, j = point.y - 4; i >= point.x - 4 && j <= point.y + 4; i--, j++) {
-            if (i >= 0 && i < MAX_LINE && j >= 0 && j < MAX_LINE) {
-                if (chessPanel[i][j] == curColor) {
-                    count++;
-                } else {
-                    count = 0;
-                }
-            }
-            if (count == 5) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private void clearChessPanel() {
         if (chessPanel == null) {
             chessPanel = new int[MAX_LINE][MAX_LINE];
@@ -485,7 +385,7 @@ public class GameView extends ViewGroup implements IGames {
     }
 
     /**
-     * 在固定位置下棋子，并检查是否结束
+     * 在固定位置下棋子，并检查游戏是否结束
      *
      * @param point     下棋子的位置，必定不为空
      * @param chessType 棋子类型，只能为黑白两种类型
@@ -505,7 +405,7 @@ public class GameView extends ViewGroup implements IGames {
 
         invalidate();   //更新棋盘界面
 
-        if (gameOver = checkWin(point)) {//游戏结束，调用监听器
+        if (gameOver = ChessJudger.checkWin(chessPanel, point)) {//游戏结束，调用监听器
 
             for (OnGameStateListener listener : onGameStateListeners) {
                 if (listener != null) {
@@ -522,13 +422,10 @@ public class GameView extends ViewGroup implements IGames {
      */
     @Override
     public void start() {
-
         if (!mModeIsP2P) {//获得最合适的位置后下子
             Point point = playStrategy.getNextStep(chessPanel, curColorIsWithe ? CHESS_WHITE : CHESS_BLACK, mCountChess, null);
-            //               Point point = dfs.maxmin(chessPanel, 4);
             setChess(point, curColorIsWithe ? CHESS_WHITE : CHESS_BLACK);
         }
-
     }
 
     @Override
@@ -553,13 +450,9 @@ public class GameView extends ViewGroup implements IGames {
 
     @Override
     public void resetOneStep() {
-        if (gameOver) { //游戏结束后不可悔棋
+        if (gameOver || mChessBlackArray.size() == 0) { //游戏结束后不可悔棋||棋盘上还没有棋子
             return;
         }
-        if (mChessBlackArray.size() == 0) {//棋盘上还没有棋子
-            return;
-        }
-        //将上一步的棋子撤销
         if (mModeIsP2P) {
             if (curColorIsWithe) {//撤销黑棋
                 int index = mChessBlackArray.size() - 1;
@@ -574,14 +467,13 @@ public class GameView extends ViewGroup implements IGames {
             }
             curColorIsWithe = !curColorIsWithe;
         } else {
-
-            if (resetCount == 1 && mChessWhiteArray.size() > 0) {//悔棋步数未用且有白色棋子
+            if (resetCount == 1 && mChessWhiteArray.size() > 0) {//有白色棋子且仅能撤销最新一步白色棋子，黑棋同时撤销
                 resetCount = 0;
 
                 playStrategy.resetOnStep();//后退评分表
 
-                int index = 0;
-                Point point = null;
+                int index;
+                Point point;
                 //撤销黑棋和白棋
                 index = mChessBlackArray.size() - 1;
                 point = mChessBlackArray.get(index);
@@ -607,22 +499,4 @@ public class GameView extends ViewGroup implements IGames {
     public void stop() {
 
     }
-
-    /**
-     * 根据棋盘、评分表计算最优位置并返回
-     *
-     * @param panel 棋盘对象
-     * @param index 第几步
-     * @param stype 下一步棋子的类型
-     * @param point 上一步棋子的位置信息
-     * @return
-     */
-    private Point getPositionForMachineWithScore(GameView panel, int index, int stype, Point point) {
-        if (stype == CHESS_BLACK && index == 1) {
-            //更新评分表，并返回天元位置
-            return new Point(7, 7);
-        }
-        return null;
-    }
-
 }

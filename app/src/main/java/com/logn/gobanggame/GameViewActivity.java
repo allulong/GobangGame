@@ -14,6 +14,8 @@ import com.logn.gobanggame.views.GameView;
 import com.logn.gobanggame.views.interfaces.OnGameStateListener;
 import com.logn.titlebar.TitleBar;
 
+import static com.logn.gobanggame.utils.ChessType.CHESS_BLACK;
+
 /**
  * Created by long on 2017/6/2.
  */
@@ -49,7 +51,7 @@ public class GameViewActivity extends AppCompatActivity {
         } else {
             titleBar.setTitle(getResources().getString(R.string.person2machine));
         }
-        gameView.setmModeIsP2P(mModeIsP2P);
+        gameView.setModeIsP2P(mModeIsP2P);
 
         gameView.setOnGameStateListener(gameStateListener);
         btnRestart.setOnClickListener(clickListener);
@@ -70,13 +72,13 @@ public class GameViewActivity extends AppCompatActivity {
         TextView content = (TextView) aalayout.findViewById(R.id.tv_item_dialog);
         String data = "";
         if (mModeIsP2P) {
-            if (chessType == GameView.CHESS_BLACK) {
+            if (chessType == CHESS_BLACK) {
                 data = "黑棋方赢了！";
             } else {
                 data = "白棋方赢了！";
             }
         } else {
-            if (chessType == GameView.CHESS_BLACK) {
+            if (chessType == CHESS_BLACK) {
                 data = "电脑赢了！";
             } else {
                 data = "恭喜你赢了！";

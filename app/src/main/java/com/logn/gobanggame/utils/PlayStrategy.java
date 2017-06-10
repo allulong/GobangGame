@@ -3,11 +3,13 @@ package com.logn.gobanggame.utils;
 import android.graphics.Point;
 import android.util.Log;
 
-import com.logn.gobanggame.views.GameView;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import static com.logn.gobanggame.utils.ChessType.CHESS_BLACK;
+import static com.logn.gobanggame.utils.ChessType.CHESS_BLANK;
+import static com.logn.gobanggame.utils.ChessType.CHESS_WHITE;
 
 
 /**
@@ -124,12 +126,12 @@ public class PlayStrategy {
      * @return
      */
     public Point getNextStep(int[][] chessPanel, int chessType, int stepIndex, Point prevStep) {
-        if (stepIndex == 0 && chessType == GameView.CHESS_BLACK) {
+        if (stepIndex == 0 && chessType == CHESS_BLACK) {
             //更新评分表
             Point p = new Point(7, 7);
             updateScoreTable(chessPanel, p, chessType);
             return p;
-        } else if (stepIndex == 1 && chessType == GameView.CHESS_WHITE) {
+        } else if (stepIndex == 1 && chessType == CHESS_WHITE) {
             //将评分表改为防守模式
         }
         //更新评分表
@@ -137,7 +139,7 @@ public class PlayStrategy {
         copyScoreTable(scoreTable, scoreTableFormer);
         resetCount = 1;
 
-        updateScoreTable(chessPanel, prevStep, chessType != GameView.CHESS_BLACK ? GameView.CHESS_BLACK : GameView.CHESS_WHITE);
+        updateScoreTable(chessPanel, prevStep, chessType != CHESS_BLACK ? CHESS_BLACK : CHESS_WHITE);
         //寻找最优位置
         Point bestPos = findBestPos(chessPanel, chessType);
         //更新评分表
@@ -172,7 +174,7 @@ public class PlayStrategy {
         //水平方向
         for (x = point.x - 4; x < point.x + 5; x++) {
             if (x < 0 || x > 14) {
-                pointState[0][x - point.x + 4] = GameView.VIRTUAL;//超出棋盘的位置
+                pointState[0][x - point.x + 4] = ScoreType.VIRTUAL;//超出棋盘的位置
             } else {
                 pointState[0][x - point.x + 4] = chessPanel[x][point.y];
             }
@@ -180,7 +182,7 @@ public class PlayStrategy {
         //竖直方向
         for (y = point.y - 4; y < point.y + 5; y++) {
             if (y < 0 || y > 14) {
-                pointState[1][y - point.y + 4] = GameView.VIRTUAL;
+                pointState[1][y - point.y + 4] = ScoreType.VIRTUAL;
             } else {
                 pointState[1][y - point.y + 4] = chessPanel[point.x][y];
             }
@@ -188,7 +190,7 @@ public class PlayStrategy {
         //   \反斜线方向
         for (x = point.x - 4, y = point.y - 4; x < point.x + 5; x++, y++) {
             if (x < 0 || y < 0 || x > 14 || y > 14) {
-                pointState[2][y - point.y + 4] = GameView.VIRTUAL;
+                pointState[2][y - point.y + 4] = ScoreType.VIRTUAL;
             } else {
                 pointState[2][y - point.y + 4] = chessPanel[x][y];
             }
@@ -196,14 +198,14 @@ public class PlayStrategy {
         //   /斜线方向
         for (x = point.x + 4, y = point.y - 4; x > point.x - 5; x--, y++) {
             if (x < 0 || y < 0 || x > 14 || y > 14) {
-                pointState[3][y - point.y + 4] = GameView.VIRTUAL;
+                pointState[3][y - point.y + 4] = ScoreType.VIRTUAL;
             } else {
                 pointState[3][y - point.y + 4] = chessPanel[x][y];
             }
         }
 
         for (int i = 0; i < 4; i++) {
-            pointState[i][4] = GameView.CHESS_BLANK;
+            pointState[i][4] = CHESS_BLANK;
         }
 
         int[][] formerTuples = new int[4][5];   //前一个元组
@@ -216,9 +218,9 @@ public class PlayStrategy {
             int finish = 0;
             //处理前面五个子，找到开始的子（棋盘内）
             for (int j = 0; j <= 4; j++) {
-                if (pointState[i][j] == GameView.VIRTUAL) {
-                    //第j(0-4)个位置中有一个是超出棋盘范围的则包含其的元组也赋值为   GameView.VIRTUAL
-                    changedTuples[i][j] = formerTuples[i][j] = GameView.VIRTUAL;
+                if (pointState[i][j] == ScoreType.VIRTUAL) {
+                    //第j(0-4)个位置中有一个是超出棋盘范围的则包含其的元组也赋值为   VIRTUAL
+                    changedTuples[i][j] = formerTuples[i][j] = ScoreType.VIRTUAL;
                 } else {
                     start = j;
                     break;
@@ -226,9 +228,9 @@ public class PlayStrategy {
             }
             //处理后面的五个子，找到结束的子（棋盘内）
             for (int j = 8; j >= 4; j--) {
-                if (pointState[i][j] == GameView.VIRTUAL) {
-                    //第j(8-4)个位置中有一个是超出棋盘范围的则包含其的元组也赋值为   GameView.VIRTUAL
-                    changedTuples[i][j - 4] = formerTuples[i][j - 4] = GameView.VIRTUAL;
+                if (pointState[i][j] == ScoreType.VIRTUAL) {
+                    //第j(8-4)个位置中有一个是超出棋盘范围的则包含其的元组也赋值为   VIRTUAL
+                    changedTuples[i][j - 4] = formerTuples[i][j - 4] = ScoreType.VIRTUAL;
                 } else {
                     finish = j;
                     break;
@@ -239,36 +241,36 @@ public class PlayStrategy {
             blank = 0;
             //记录第i条线上前四个点的棋子类型的数量，没有棋子的位置也归为一种类型
             for (int j = start; j < start + 4; j++) {
-                if (pointState[i][j] == GameView.CHESS_BLANK) {
+                if (pointState[i][j] == CHESS_BLANK) {
                     blank++;
-                } else if (pointState[i][j] == GameView.CHESS_BLACK) {
+                } else if (pointState[i][j] == CHESS_BLACK) {
                     black++;
-                } else if (pointState[i][j] == GameView.CHESS_WHITE) {
+                } else if (pointState[i][j] == CHESS_WHITE) {
                     white++;
                 }
             }
             //开始检查这条线上的五元组
             for (int j = start + 4; j <= finish; j++) {
-                if (pointState[i][j] == GameView.CHESS_BLANK) {
+                if (pointState[i][j] == CHESS_BLANK) {
                     blank++;
-                } else if (pointState[i][j] == GameView.CHESS_BLACK) {
+                } else if (pointState[i][j] == CHESS_BLACK) {
                     black++;
-                } else if (pointState[i][j] == GameView.CHESS_WHITE) {
+                } else if (pointState[i][j] == CHESS_WHITE) {
                     white++;
                 }
                 //处理下子前的元组
                 if (black > 0 && white > 0) {   //元组中有黑棋和白棋
-                    formerTuples[i][j - 4] = GameView.POLLUTED;
+                    formerTuples[i][j - 4] = ScoreType.POLLUTED;
                 } else if (black == 0 && white == 0) {  //元组中没有棋子
-                    formerTuples[i][j - 4] = GameView.BLANK;
+                    formerTuples[i][j - 4] = ScoreType.BLANK;
                 } else if (black == 0) {    //元组中只有白棋
-                    formerTuples[i][j - 4] = (white + 4) + GameView.BLANK;//对应到5-8
+                    formerTuples[i][j - 4] = (white + 4) + ScoreType.BLANK;//对应到5-8
                 } else {    //元组中只有黑棋
-                    formerTuples[i][j - 4] = black + GameView.BLANK;    //对应到1-4
+                    formerTuples[i][j - 4] = black + ScoreType.BLANK;    //对应到1-4
                 }
                 //deal with changedTuples,increase for change
                 //处理下子后的元组
-                if (chessType == GameView.CHESS_BLACK) {
+                if (chessType == CHESS_BLACK) {
                     black++;
                     blank--;
                 } else {
@@ -277,16 +279,16 @@ public class PlayStrategy {
                 }
                 //recognize
                 if (black > 0 && white > 0) {
-                    changedTuples[i][j - 4] = GameView.POLLUTED;
+                    changedTuples[i][j - 4] = ScoreType.POLLUTED;
                 } else if (black == 0 && white == 0) {
-                    changedTuples[i][j - 4] = GameView.BLANK;
+                    changedTuples[i][j - 4] = ScoreType.BLANK;
                 } else if (black == 0) {
-                    changedTuples[i][j - 4] = (white + 4) + GameView.BLANK;
+                    changedTuples[i][j - 4] = (white + 4) + ScoreType.BLANK;
                 } else {
-                    changedTuples[i][j - 4] = black + GameView.BLANK;
+                    changedTuples[i][j - 4] = black + ScoreType.BLANK;
                 }
                 //deal with changedTuples,decrease
-                if (chessType == GameView.CHESS_BLACK) {
+                if (chessType == CHESS_BLACK) {
                     black--;
                     blank++;
                 } else {
@@ -295,11 +297,11 @@ public class PlayStrategy {
                 }
 
                 //slide to next tuple ,so the first of current tuple should be dropped
-                if (pointState[i][j - 4] == GameView.CHESS_BLANK) {
+                if (pointState[i][j - 4] == CHESS_BLANK) {
                     blank--;
-                } else if (pointState[i][j - 4] == GameView.CHESS_BLACK) {
+                } else if (pointState[i][j - 4] == CHESS_BLACK) {
                     black--;
-                } else if (pointState[i][j - 4] == GameView.CHESS_WHITE) {
+                } else if (pointState[i][j - 4] == CHESS_WHITE) {
                     white--;
                 }
             }
@@ -311,7 +313,7 @@ public class PlayStrategy {
         int[][] changedScore = new int[4][5];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 5; j++) {
-                int score = tupleScoreTable[changedTuples[i][j] - GameView.BLANK] - tupleScoreTable[formerTuples[i][j] - GameView.BLANK];
+                int score = tupleScoreTable[changedTuples[i][j] - ScoreType.BLANK] - tupleScoreTable[formerTuples[i][j] - ScoreType.BLANK];
                 changedScore[i][j] = score;
             }
         }
