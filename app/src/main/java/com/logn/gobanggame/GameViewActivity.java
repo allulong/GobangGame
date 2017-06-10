@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.logn.gobanggame.views.GameView;
@@ -25,6 +26,8 @@ public class GameViewActivity extends AppCompatActivity {
     private Button btnRestart;
     private Button btnReSetOneStep;
 
+    private boolean mModeIsP2P;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,19 +38,19 @@ public class GameViewActivity extends AppCompatActivity {
 
     private void init() {
         Intent intent = getIntent();
-        boolean modeP2P = intent.getBooleanExtra(GameView.MODE, false);
+        mModeIsP2P = intent.getBooleanExtra(GameView.MODE, false);
 
         gameView = (GameView) findViewById(R.id.game_view);
         btnRestart = (Button) findViewById(R.id.btn_restart_game_view);
         btnReSetOneStep = (Button) findViewById(R.id.btn_reset_one_step);
         titleBar = (TitleBar) findViewById(R.id.title_bar_game_view);
 
-        if (modeP2P) {
+        if (mModeIsP2P) {
             titleBar.setTitle(getResources().getString(R.string.person2person));
         } else {
             titleBar.setTitle(getResources().getString(R.string.person2machine));
         }
-        gameView.setmModeIsP2P(modeP2P);
+        gameView.setmModeIsP2P(mModeIsP2P);
 
         gameView.setOnGameStateListener(gameStateListener);
         btnRestart.setOnClickListener(clickListener);
@@ -58,25 +61,43 @@ public class GameViewActivity extends AppCompatActivity {
         @Override
         public void changeState(boolean win, int chessType) {
             if (win) {
-                Toast.makeText(GameViewActivity.this, "恭喜玩家" + chessType + "赢了", Toast.LENGTH_SHORT).show();
                 showWinDialog(chessType);
             }
         }
     };
 
     private void showWinDialog(int chessType) {
+        View aalayout = View.inflate(GameViewActivity.this, R.layout.item_dialog_text, null);
+        TextView content = (TextView) aalayout.findViewById(R.id.tv_item_dialog);
+        String data = "";
+        if (mModeIsP2P) {
+            if (chessType == GameView.CHESS_BLACK) {
+                data = "黑棋方赢了！";
+            } else {
+                data = "白棋方赢了！";
+            }
+        } else {
+            if (chessType == GameView.CHESS_BLACK) {
+                data = "电脑赢了！";
+            } else {
+                data = "恭喜你赢了！";
+            }
+        }
+        content.setText(data);
         AlertDialog.Builder build = new AlertDialog.Builder(GameViewActivity.this);
-        build.setTitle("游戏结束").setMessage("赢家：" + chessType).setPositiveButton("退出游戏", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        }).setNegativeButton("再来一局", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                gameView.reStart();
-            }
-        });
+        build.setView(aalayout)
+                .setPositiveButton("退出游戏", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .setNegativeButton("再来一局", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        gameView.reStart();
+                    }
+                });
         build.create().show();
     }
 

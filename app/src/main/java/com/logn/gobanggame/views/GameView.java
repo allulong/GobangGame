@@ -77,6 +77,8 @@ public class GameView extends ViewGroup implements IGames, ChessBoard {
      */
     private boolean mModeIsP2P;
 
+    private int resetCount = 1;
+
     public void setmModeIsP2P(boolean mModeIsP2P) {
         this.mModeIsP2P = mModeIsP2P;
         start();
@@ -362,6 +364,8 @@ public class GameView extends ViewGroup implements IGames, ChessBoard {
                     Log.e("电脑下的位置", mCountChess + ":" + mPoint.toString());
 //                    Point mPoint = dfs.maxmin(chessPanel, 4);
                     setChess(mPoint, CHESS_BLACK);
+
+                    resetCount = 1;
                 }
 
                 break;
@@ -588,14 +592,29 @@ public class GameView extends ViewGroup implements IGames, ChessBoard {
                 chessPanel[point.x][point.y] = 0;
             }
             curColorIsWithe = !curColorIsWithe;
-            invalidate();
         } else {
-            int index = 0;
-            Point point = null;
-            //撤销黑棋和白棋
 
+            if (resetCount == 1 && mChessWhiteArray.size() > 0) {//悔棋步数未用且有白色棋子
+                resetCount = 0;
+
+                playStrategy.resetOnStep();//后退评分表
+
+                int index = 0;
+                Point point = null;
+                //撤销黑棋和白棋
+                index = mChessBlackArray.size() - 1;
+                point = mChessBlackArray.get(index);
+                mChessBlackArray.remove(index);
+                chessPanel[point.x][point.y] = 0;
+
+                index = mChessWhiteArray.size() - 1;
+                point = mChessWhiteArray.get(index);
+                mChessWhiteArray.remove(index);
+                chessPanel[point.x][point.y] = 0;
+            }
 
         }
+        invalidate();
     }
 
     @Override
