@@ -3,6 +3,8 @@ package com.logn.gobanggame.utils;
 import android.graphics.Point;
 import android.util.Log;
 
+import com.logn.gobanggame.factory.base.IStrategy;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -16,7 +18,7 @@ import static com.logn.gobanggame.utils.ChessType.CHESS_WHITE;
  * Created by long on 2017/6/5.
  */
 
-public class PlayStrategy {
+public class PlayStrategy implements IStrategy{
 
     private int[] tupleScoreTable;
     private int[][] scoreTable; //每一个点的分数

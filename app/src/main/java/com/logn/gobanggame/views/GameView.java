@@ -11,6 +11,8 @@ import android.view.MotionEvent;
 import android.view.ViewGroup;
 
 import com.logn.gobanggame.R;
+import com.logn.gobanggame.factory.base.IStrategy;
+import com.logn.gobanggame.factory.base.StrategyFactory;
 import com.logn.gobanggame.utils.ChessJudger;
 import com.logn.gobanggame.utils.PlayStrategy;
 import com.logn.gobanggame.views.interfaces.IGames;
@@ -91,7 +93,7 @@ public class GameView extends ViewGroup implements IGames {
     private Bitmap mChessBlackBm;
     private Bitmap mChessFlagBm;
 
-    private PlayStrategy playStrategy;
+    private IStrategy strategy;
 
     public GameView(Context context) {
         this(context, null);
@@ -320,7 +322,7 @@ public class GameView extends ViewGroup implements IGames {
                 boolean setSucceed = setChessForPerson(point, curColorIsWithe ? CHESS_WHITE : CHESS_BLACK);
 
                 if (setSucceed && !mModeIsP2P && !gameOver) {
-                    Point mPoint = playStrategy.getNextStep(chessPanel, curColorIsWithe ? CHESS_WHITE : CHESS_BLACK, mCountChess, point);
+                    Point mPoint = strategy.getNextStep(chessPanel, curColorIsWithe ? CHESS_WHITE : CHESS_BLACK, mCountChess, point);
                     setChess(mPoint, CHESS_BLACK);
 
                     resetCount = 1;
@@ -360,15 +362,14 @@ public class GameView extends ViewGroup implements IGames {
         mChessWhiteBm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_chess_white);
         mChessFlagBm = BitmapFactory.decodeResource(getResources(), R.mipmap.icon_chess_red_dot);
 
+        mPaint = new Paint();
+
         curColorIsWithe = false;
         mCountChess = 0;
         gameOver = false;
 
-        mModeIsP2P = true;
+        strategy = StrategyFactory.create(PlayStrategy.class);
 
-        playStrategy = new PlayStrategy();
-
-        mPaint = new Paint();
     }
 
     private boolean setChessForPerson(Point point, int chessType) {
@@ -423,7 +424,7 @@ public class GameView extends ViewGroup implements IGames {
     @Override
     public void start() {
         if (!mModeIsP2P) {//获得最合适的位置后下子
-            Point point = playStrategy.getNextStep(chessPanel, curColorIsWithe ? CHESS_WHITE : CHESS_BLACK, mCountChess, null);
+            Point point = strategy.getNextStep(chessPanel, curColorIsWithe ? CHESS_WHITE : CHESS_BLACK, mCountChess, null);
             setChess(point, curColorIsWithe ? CHESS_WHITE : CHESS_BLACK);
         }
     }
@@ -440,7 +441,7 @@ public class GameView extends ViewGroup implements IGames {
         mCountChess = 0;
         gameOver = false;
 
-        playStrategy = new PlayStrategy();
+        strategy = StrategyFactory.create(PlayStrategy.class);
 
         start();
 
@@ -470,7 +471,7 @@ public class GameView extends ViewGroup implements IGames {
             if (resetCount == 1 && mChessWhiteArray.size() > 0) {//有白色棋子且仅能撤销最新一步白色棋子，黑棋同时撤销
                 resetCount = 0;
 
-                playStrategy.resetOnStep();//后退评分表
+                strategy.resetOnStep();//后退评分表
 
                 int index;
                 Point point;

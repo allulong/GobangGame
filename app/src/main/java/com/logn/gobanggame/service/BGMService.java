@@ -19,7 +19,6 @@ public class BGMService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-
         return null;
     }
 
@@ -28,7 +27,7 @@ public class BGMService extends Service {
         super.onStart(intent, startId);
 
         if (player == null) {
-            player = MediaPlayer.create(this, R.raw.bgm_miao);
+            player = MediaPlayer.create(this, R.raw.bgm_dayu);
             player.setLooping(true);
             player.start();
             Log.e("BGM", "start");

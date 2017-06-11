@@ -36,13 +36,39 @@ public class GameViewActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        Log.e("live", "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_view);
         init();
     }
 
     @Override
+    protected void onStart() {
+        Log.e("live", "onStart");
+        super.onStart();
+    }
+
+    @Override
+    protected void onRestart() {
+        Log.e("live", "onRestart");
+        super.onRestart();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.e("live", "onStop");
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.e("live", "onDestroy");
+        super.onDestroy();
+    }
+
+    @Override
     protected void onResume() {
+        Log.e("live", "onResume");
         super.onResume();
         mCanPlay = (boolean) SpUtils.get(this, DefaultValue.KEY_SP_BGM_PERMISSION, true);
         if (mCanPlay) {
@@ -53,6 +79,7 @@ public class GameViewActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        Log.e("live", "onPause");
         if (mCanPlay) {
             Intent intent = new Intent(GameViewActivity.this, BGMService.class);
             stopService(intent);
