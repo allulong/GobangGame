@@ -10,6 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="@color/colorGrayBackGround"
+        app:rightText="@string/setting"
+        app:rightTextColor="@color/colorBlackText"
         app:titleBarColor="@color/colorBlackText"
         app:titleBarText="@string/person2person"></com.logn.titlebar.TitleBar>
 

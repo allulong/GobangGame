@@ -31,8 +31,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_marginBottom="11dp"
-        android:layout_marginTop="22dp"
         android:text="@string/person2person" />
 
     <TextView
@@ -40,6 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/btn_home_p2p"
         android:layout_centerInParent="true"
+        android:layout_marginBottom="11dp"
         android:text="@string/chooseModel"
         android:textColor="@color/colorBlackText" />
 
@@ -50,6 +49,14 @@
         android:layout_below="@id/btn_home_p2p"
         android:layout_centerInParent="true"
         android:text="@string/person2machine" />
+
+    <Button
+        android:id="@+id/btn_home_setting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_home_p2m"
+        android:layout_centerInParent="true"
+        android:text="@string/setting" />
 
 
 </RelativeLayout>

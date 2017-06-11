@@ -6,10 +6,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.logn.gobanggame.service.BGMService;
+import com.logn.gobanggame.utils.DefaultValue;
+import com.logn.gobanggame.utils.SpUtils;
 import com.logn.gobanggame.views.GameView;
 import com.logn.gobanggame.views.interfaces.OnGameStateListener;
 import com.logn.titlebar.TitleBar;
@@ -28,13 +32,32 @@ public class GameViewActivity extends AppCompatActivity {
     private Button btnReSetOneStep;
 
     private boolean mModeIsP2P;
+    private boolean mCanPlay = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_view);
-
         init();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mCanPlay = (boolean) SpUtils.get(this, DefaultValue.KEY_SP_BGM_PERMISSION, true);
+        if (mCanPlay) {
+            Intent intent = new Intent(GameViewActivity.this, BGMService.class);
+            startService(intent);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        if (mCanPlay) {
+            Intent intent = new Intent(GameViewActivity.this, BGMService.class);
+            stopService(intent);
+        }
+        super.onPause();
     }
 
     private void init() {
@@ -45,6 +68,24 @@ public class GameViewActivity extends AppCompatActivity {
         btnRestart = (Button) findViewById(R.id.btn_restart_game_view);
         btnReSetOneStep = (Button) findViewById(R.id.btn_reset_one_step);
         titleBar = (TitleBar) findViewById(R.id.title_bar_game_view);
+        titleBar.setOnTitleClickListener(new TitleBar.OnTitleClickListener() {
+            @Override
+            public void onLeftClick() {
+
+            }
+
+            @Override
+            public void onRightClick() {
+                Intent setting = new Intent();
+                setting.setClass(GameViewActivity.this, SettingActivity.class);
+                startActivity(setting);
+            }
+
+            @Override
+            public void onTitleClick() {
+
+            }
+        });
 
         if (mModeIsP2P) {
             titleBar.setTitle(getResources().getString(R.string.person2person));

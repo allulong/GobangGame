@@ -17,6 +17,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".GameViewActivity" />
+        <activity android:name=".SettingActivity" />
+
+        <service android:name=".service.BGMService" />
     </application>
 
 </manifest>

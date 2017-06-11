@@ -11,8 +11,9 @@ import com.logn.gobanggame.views.GameView;
 
 public class HomeViewActivity extends AppCompatActivity {
 
-    private Button person2Person;
-    private Button person2Machine;
+    private Button btnPerson2Person;
+    private Button btnPerson2Machine;
+    private Button btnSetting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,13 +25,15 @@ public class HomeViewActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        person2Person = (Button) findViewById(R.id.btn_home_p2p);
-        person2Machine = (Button) findViewById(R.id.btn_home_p2m);
+        btnPerson2Person = (Button) findViewById(R.id.btn_home_p2p);
+        btnPerson2Machine = (Button) findViewById(R.id.btn_home_p2m);
+        btnSetting = (Button) findViewById(R.id.btn_home_setting);
     }
 
     private void initValue() {
-        person2Person.setOnClickListener(btnListener);
-        person2Machine.setOnClickListener(btnListener);
+        btnPerson2Person.setOnClickListener(btnListener);
+        btnPerson2Machine.setOnClickListener(btnListener);
+        btnSetting.setOnClickListener(btnListener);
     }
 
     private View.OnClickListener btnListener = new View.OnClickListener() {
@@ -48,6 +51,11 @@ public class HomeViewActivity extends AppCompatActivity {
                     intent2.setClass(HomeViewActivity.this, GameViewActivity.class);
                     intent2.putExtra(GameView.MODE, false);
                     startActivity(intent2);
+                    break;
+                case R.id.btn_home_setting:
+                    Intent setting = new Intent();
+                    setting.setClass(HomeViewActivity.this, SettingActivity.class);
+                    startActivity(setting);
                     break;
                 default:
                     Toast.makeText(HomeViewActivity.this, "...", Toast.LENGTH_SHORT).show();
