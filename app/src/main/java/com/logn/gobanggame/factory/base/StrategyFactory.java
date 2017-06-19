@@ -10,7 +10,7 @@ public class StrategyFactory {
 
     public static IStrategy create(Class<? extends IStrategy> clazz) {
         String clazzName = clazz.getName();
-        if (clazz.equals(PlayStrategy.class.getName())) {
+        if (clazzName.equals(PlayStrategy.class.getName())) {
             return new PlayStrategy();
         }
         return null;
