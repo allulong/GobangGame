@@ -7,7 +7,7 @@
 <div align=center><img width="250" hright="350" src="https://github.com/allulong/GobangGame/blob/master/screenshot/home_view.png"/></div>
 
 - 游戏界面 
-<img width="250" hright="350" src="https://github.com/allulong/GobangGame/blob/master/screenshot/game_view.png"/>
+<div align=center><img width="250" hright="350" src="https://github.com/allulong/GobangGame/blob/master/screenshot/game_view.png"/></div>
 
 - 历史棋局列表
-<img width="250" hright="350" src="https://github.com/allulong/GobangGame/blob/master/screenshot/history_list.png"/>
+<div align=center><img width="250" hright="350" src="https://github.com/allulong/GobangGame/blob/master/screenshot/history_list.png"/></div>
