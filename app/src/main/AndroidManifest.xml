@@ -18,6 +18,8 @@
         </activity>
         <activity android:name=".GameViewActivity" />
         <activity android:name=".SettingActivity" />
+        <activity android:name=".HistoryActivity" />
+        <activity android:name=".GameViewHistoryActivity" />
 
         <service android:name=".service.BGMService" />
     </application>

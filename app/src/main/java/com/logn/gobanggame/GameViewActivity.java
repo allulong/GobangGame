@@ -2,6 +2,7 @@ package com.logn.gobanggame;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -10,13 +11,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.logn.gobanggame.service.BGMService;
+import com.logn.gobanggame.utils.Array2StringUtils;
 import com.logn.gobanggame.utils.DefaultValue;
 import com.logn.gobanggame.utils.SpUtils;
+import com.logn.gobanggame.utils.greendao.ChessArrayBean;
+import com.logn.gobanggame.utils.greendao.DBManager;
 import com.logn.gobanggame.views.GameView;
 import com.logn.gobanggame.views.interfaces.OnGameStateListener;
 import com.logn.titlebar.TitleBar;
+
+import java.util.List;
 
 import static com.logn.gobanggame.utils.ChessType.CHESS_BLACK;
 
@@ -34,41 +41,18 @@ public class GameViewActivity extends AppCompatActivity {
     private boolean mModeIsP2P;
     private boolean mCanPlay = true;
 
+    private DBManager manager;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        Log.e("live", "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_view);
         init();
     }
 
-    @Override
-    protected void onStart() {
-        Log.e("live", "onStart");
-        super.onStart();
-    }
-
-    @Override
-    protected void onRestart() {
-        Log.e("live", "onRestart");
-        super.onRestart();
-    }
-
-    @Override
-    protected void onStop() {
-        Log.e("live", "onStop");
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        Log.e("live", "onDestroy");
-        super.onDestroy();
-    }
 
     @Override
     protected void onResume() {
-        Log.e("live", "onResume");
         super.onResume();
         mCanPlay = (boolean) SpUtils.get(this, DefaultValue.KEY_SP_BGM_PERMISSION, true);
         if (mCanPlay) {
@@ -79,7 +63,6 @@ public class GameViewActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        Log.e("live", "onPause");
         if (mCanPlay) {
             Intent intent = new Intent(GameViewActivity.this, BGMService.class);
             stopService(intent);
@@ -130,12 +113,45 @@ public class GameViewActivity extends AppCompatActivity {
         @Override
         public void changeState(boolean win, int chessType) {
             if (win) {
-                showWinDialog(chessType);
+                showDialogForHistory(chessType);
             }
         }
     };
 
-    private void showWinDialog(int chessType) {
+    private void showDialogForHistory(final int chessType) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(GameViewActivity.this);
+        builder.setTitle("游戏结束")
+                .setMessage("是否保存此棋局")
+                .setPositiveButton("保存", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //保存棋局
+                        if (manager == null) {
+                            manager = DBManager.getInstance(GameViewActivity.this);
+                        }
+                        String arrayWhite = Array2StringUtils.getStringFromArray(gameView.getmChessWhiteArray());
+                        String arrayBlack = Array2StringUtils.getStringFromArray(gameView.getmChessBlackArray());
+                        ChessArrayBean bean = new ChessArrayBean();
+                        bean.set_id(System.currentTimeMillis());
+                        bean.setChessBlacks(arrayBlack);
+                        bean.setChessWhites(arrayWhite);
+                        bean.setHasBackups(false);//false表示未上传
+                        manager.insertChessArrayBean(bean);
+                        Toast.makeText(GameViewActivity.this, "此棋局已保存", Toast.LENGTH_SHORT).show();
+                        showDialogForWin(chessType);
+                    }
+                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                showDialogForWin(chessType);
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void showDialogForWin(int chessType) {
         View aalayout = View.inflate(GameViewActivity.this, R.layout.item_dialog_text, null);
         TextView content = (TextView) aalayout.findViewById(R.id.tv_item_dialog);
         String data = "";

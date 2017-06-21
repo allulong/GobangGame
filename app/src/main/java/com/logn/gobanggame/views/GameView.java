@@ -78,6 +78,44 @@ public class GameView extends ViewGroup implements IGames {
     //记录棋子的位置信息
     private List<Point> mChessWhiteArray;
     private List<Point> mChessBlackArray;
+
+    public void addWhiteChess(Point point) {
+        mChessWhiteArray.add(point);
+    }
+
+    public void addBlackChess(Point point) {
+        mChessBlackArray.add(point);
+    }
+
+    public void removeWhiteChess(Point point) {
+        mChessWhiteArray.remove(point);
+    }
+
+    public void removeBlackChess(Point point) {
+        mChessBlackArray.remove(point);
+    }
+
+    public void updateChessPanel() {
+        invalidate();
+    }
+
+    public void setmChessWhiteArray(List<Point> mChessWhiteArray) {
+        this.mChessWhiteArray = mChessWhiteArray;
+    }
+
+    public void setmChessBlackArray(List<Point> mChessBlackArray) {
+        this.mChessBlackArray = mChessBlackArray;
+    }
+
+
+    public List<Point> getmChessWhiteArray() {
+        return mChessWhiteArray;
+    }
+
+    public List<Point> getmChessBlackArray() {
+        return mChessBlackArray;
+    }
+
     //记录整个棋盘的信息
     private int[][] chessPanel;
 
@@ -276,7 +314,7 @@ public class GameView extends ViewGroup implements IGames {
     private void drawDotForNewChess(Canvas canvas) {
         if (mChessBlackArray.size() > 0 || mChessWhiteArray.size() > 0) {
             Point point = null;
-            if (!curColorIsWithe) {  //即将下的棋子为黑色，则最新下的一个棋子一定是白色
+            if (mChessWhiteArray.size() >= mChessBlackArray.size()) {  //即将下的棋子为黑色，则最新下的一个棋子一定是白色
                 //取白色最后一个下的棋子的坐标
                 point = mChessWhiteArray.get(mChessWhiteArray.size() - 1);
             } else {  //否则为黑色

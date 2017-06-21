@@ -10,8 +10,8 @@
         android:id="@+id/title_bar_home"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="@color/colorGrayBackGround"
-        app:titleBarColor="@color/colorBlackText"
+        android:background="@color/colorPrimary"
+        app:titleBarColor="@color/colorGrayBackGround"
         app:titleBarText="@string/app_name" />
 
     <View
@@ -25,38 +25,45 @@
         android:layout_height="match_parent"
         android:layout_below="@id/title_bar_home" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/title_bar_home"
+        android:gravity="center"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/btn_home_p2p"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="@string/person2person" />
+        <info.hoang8f.widget.FButton
+            android:id="@+id/btn_home_p2p"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:text="@string/person2person"
+            android:textColor="@color/colorGrayBackGround" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/btn_home_p2p"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="11dp"
-        android:text="@string/chooseModel"
-        android:textColor="@color/colorBlackText" />
+        <info.hoang8f.widget.FButton
+            android:id="@+id/btn_home_p2m"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:text="@string/person2machine"
+            android:textColor="@color/colorGrayBackGround" />
 
-    <Button
-        android:id="@+id/btn_home_p2m"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btn_home_p2p"
-        android:layout_centerInParent="true"
-        android:text="@string/person2machine" />
+        <info.hoang8f.widget.FButton
+            android:id="@+id/btn_home_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:text="@string/history"
+            android:textColor="@color/colorGrayBackGround" />
 
-    <Button
-        android:id="@+id/btn_home_setting"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btn_home_p2m"
-        android:layout_centerInParent="true"
-        android:text="@string/setting" />
+        <info.hoang8f.widget.FButton
+            android:id="@+id/btn_home_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:text="@string/setting"
+            android:textColor="@color/colorGrayBackGround" />
+    </LinearLayout>
 
 
 </RelativeLayout>

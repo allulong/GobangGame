@@ -8,8 +8,16 @@
     <string name="restart">重新开始</string>
     <string name="reset_one_step">悔棋</string>
 
-
     <string name="setting">设置</string>
     <string name="music">音乐</string>
     <string name="music_on">播放音乐</string>
+    <string name="history">历史记录</string>
+    <string name="iCloud">云同步</string>
+    <string name="back">返回</string>
+    <string name="finish">结束</string>
+    <string name="next_step">下一步</string>
+    <string name="former_step">上一步</string>
+
+    <string name="history_chess_panel">历史棋局</string>
+
 </resources>

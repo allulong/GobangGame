@@ -6,14 +6,14 @@
     android:orientation="vertical">
 
     <com.logn.titlebar.TitleBar
-        android:id="@+id/title_bar_game_view"
+        android:id="@+id/title_bar_game_view_history"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="@color/colorPrimary"
         app:leftText="@string/finish"
         app:rightText="@string/setting"
         app:titleBarColor="@color/colorGrayBackGround"
-        app:titleBarText="@string/person2person">
+        app:titleBarText="@string/history_chess_panel">
 
     </com.logn.titlebar.TitleBar>
 
@@ -21,43 +21,44 @@
         android:id="@+id/img_back_ground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/title_bar_game_view"
+        android:layout_below="@id/title_bar_game_view_history"
         android:scaleType="centerCrop"
         android:src="@mipmap/icon_back_ground_desk" />
 
+
     <LinearLayout
-        android:id="@+id/ll"
+        android:id="@+id/ll_history"
         android:layout_width="match_parent"
         android:layout_height="66dp"
-        android:layout_below="@id/title_bar_game_view"
+        android:layout_below="@id/title_bar_game_view_history"
         android:gravity="center"
         android:orientation="horizontal">
 
         <info.hoang8f.widget.FButton
-            android:id="@+id/btn_restart_game_view"
+            android:id="@+id/btn_former_step"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:layout_weight="1"
-            android:text="@string/restart"
+            android:text="@string/former_step"
             android:textColor="@color/colorGrayBackGround" />
 
         <info.hoang8f.widget.FButton
-            android:id="@+id/btn_reset_one_step"
+            android:id="@+id/btn_next_step"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:layout_weight="1"
-            android:text="@string/reset_one_step"
+            android:text="@string/next_step"
             android:textColor="@color/colorGrayBackGround" />
+
     </LinearLayout>
 
-
     <com.logn.gobanggame.views.GameView
-        android:id="@+id/game_view"
+        android:id="@+id/game_view_history"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/ll"
+        android:layout_below="@id/ll_history"
         android:background="#333f3f3f">
 
     </com.logn.gobanggame.views.GameView>
@@ -66,7 +67,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/title_bar_game_view"
+        android:layout_below="@id/title_bar_game_view_history"
         android:background="@color/colorBlackText" />
 
     <TextView

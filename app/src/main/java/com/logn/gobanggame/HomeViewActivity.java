@@ -9,11 +9,16 @@ import android.widget.Toast;
 
 import com.logn.gobanggame.views.GameView;
 
+import info.hoang8f.widget.FButton;
+
 public class HomeViewActivity extends AppCompatActivity {
 
-    private Button btnPerson2Person;
-    private Button btnPerson2Machine;
-    private Button btnSetting;
+    private FButton btnPerson2Person;
+    private FButton btnPerson2Machine;
+    private FButton btnSetting;
+    private FButton btnHistory;
+
+    private long lastPressTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,15 +30,17 @@ public class HomeViewActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        btnPerson2Person = (Button) findViewById(R.id.btn_home_p2p);
-        btnPerson2Machine = (Button) findViewById(R.id.btn_home_p2m);
-        btnSetting = (Button) findViewById(R.id.btn_home_setting);
+        btnPerson2Person = (FButton) findViewById(R.id.btn_home_p2p);
+        btnPerson2Machine = (FButton) findViewById(R.id.btn_home_p2m);
+        btnSetting = (FButton) findViewById(R.id.btn_home_setting);
+        btnHistory = (FButton) findViewById(R.id.btn_home_history);
     }
 
     private void initValue() {
         btnPerson2Person.setOnClickListener(btnListener);
         btnPerson2Machine.setOnClickListener(btnListener);
         btnSetting.setOnClickListener(btnListener);
+        btnHistory.setOnClickListener(btnListener);
     }
 
     private View.OnClickListener btnListener = new View.OnClickListener() {
@@ -52,6 +59,12 @@ public class HomeViewActivity extends AppCompatActivity {
                     intent2.putExtra(GameView.MODE, false);
                     startActivity(intent2);
                     break;
+                case R.id.btn_home_history:
+                    //跳转到历史列表界面
+                    Intent intent3 = new Intent();
+                    intent3.setClass(HomeViewActivity.this, HistoryActivity.class);
+                    startActivity(intent3);
+                    break;
                 case R.id.btn_home_setting:
                     Intent setting = new Intent();
                     setting.setClass(HomeViewActivity.this, SettingActivity.class);
@@ -62,4 +75,16 @@ public class HomeViewActivity extends AppCompatActivity {
             }
         }
     };
+
+    @Override
+    public void onBackPressed() {
+        long newPressTime = System.currentTimeMillis();
+        if ((newPressTime - lastPressTime) > 2000) {
+            Toast.makeText(this, "再按一次退出游戏", Toast.LENGTH_SHORT).show();
+            lastPressTime = newPressTime;
+        } else {
+            finish();
+        }
+
+    }
 }

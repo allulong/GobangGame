@@ -6,28 +6,29 @@
     android:orientation="vertical">
 
     <com.logn.titlebar.TitleBar
-        android:id="@+id/title_bar_setting"
+        android:id="@+id/history_title_bar"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="@color/colorPrimary"
+        app:leftText="@string/back"
+        app:leftTextColor="@color/colorGrayBackGround"
+        app:rightText="@string/iCloud"
+        app:rightTextColor="@color/colorGrayBackGround"
         app:titleBarColor="@color/colorGrayBackGround"
-        app:titleBarText="@string/setting">
+        app:titleBarText="@string/history">
 
     </com.logn.titlebar.TitleBar>
-
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/title_bar_setting"
-        android:background="@color/colorBlackText" />
+        android:background="#77000000" />
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/history_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <CheckBox
-        android:id="@+id/setting_checkbox_bgm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="22dp"
-        android:text="@string/music_on" />
+    </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>
