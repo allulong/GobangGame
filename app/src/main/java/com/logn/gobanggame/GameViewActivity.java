@@ -81,7 +81,7 @@ public class GameViewActivity extends AppCompatActivity {
         titleBar.setOnTitleClickListener(new TitleBar.OnTitleClickListener() {
             @Override
             public void onLeftClick() {
-
+                finish();
             }
 
             @Override

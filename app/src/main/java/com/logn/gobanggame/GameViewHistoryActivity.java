@@ -1,5 +1,6 @@
 package com.logn.gobanggame;
 
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.widget.Toast;
 
 import com.logn.gobanggame.utils.ChessArrayUtils;
 import com.logn.gobanggame.views.GameView;
+import com.logn.titlebar.TitleBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,7 @@ public class GameViewHistoryActivity extends FragmentActivity {
 
     private FButton btnNext;
     private FButton btnFormer;
+    private TitleBar titleBar;
 
     private int chessCount;
     private GameView gameView;
@@ -44,10 +47,12 @@ public class GameViewHistoryActivity extends FragmentActivity {
     private void initView() {
         btnNext = (FButton) findViewById(R.id.btn_next_step);
         btnFormer = (FButton) findViewById(R.id.btn_former_step);
+        titleBar = (TitleBar) findViewById(R.id.title_bar_game_view_history);
         gameView = (GameView) findViewById(R.id.game_view_history);
 
         btnFormer.setOnClickListener(listener);
         btnNext.setOnClickListener(listener);
+        titleBar.setOnTitleClickListener(titleClickListener);
     }
 
     private void initData() {
@@ -100,4 +105,23 @@ public class GameViewHistoryActivity extends FragmentActivity {
         }
         gameView.updateChessPanel();
     }
+
+    private TitleBar.OnTitleClickListener titleClickListener = new TitleBar.OnTitleClickListener() {
+        @Override
+        public void onLeftClick() {
+            finish();
+        }
+
+        @Override
+        public void onRightClick() {
+            Intent setting = new Intent();
+            setting.setClass(GameViewHistoryActivity.this, SettingActivity.class);
+            startActivity(setting);
+        }
+
+        @Override
+        public void onTitleClick() {
+
+        }
+    };
 }

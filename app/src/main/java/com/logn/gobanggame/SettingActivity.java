@@ -8,6 +8,7 @@ import android.widget.CompoundButton;
 
 import com.logn.gobanggame.utils.DefaultValue;
 import com.logn.gobanggame.utils.SpUtils;
+import com.logn.titlebar.TitleBar;
 
 /**
  * Created by long on 2017/6/11.
@@ -16,6 +17,7 @@ import com.logn.gobanggame.utils.SpUtils;
 public class SettingActivity extends FragmentActivity {
 
     private CheckBox mCheckBoxBGM;
+    private TitleBar titleBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,6 +38,24 @@ public class SettingActivity extends FragmentActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SpUtils.put(SettingActivity.this, DefaultValue.KEY_SP_BGM_PERMISSION, isChecked);
+            }
+        });
+
+        titleBar = (TitleBar) findViewById(R.id.title_bar_setting);
+        titleBar.setOnTitleClickListener(new TitleBar.OnTitleClickListener() {
+            @Override
+            public void onLeftClick() {
+                finish();
+            }
+
+            @Override
+            public void onRightClick() {
+
+            }
+
+            @Override
+            public void onTitleClick() {
+
             }
         });
     }
