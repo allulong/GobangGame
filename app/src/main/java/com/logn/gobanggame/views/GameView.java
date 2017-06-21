@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 
@@ -350,6 +351,10 @@ public class GameView extends ViewGroup implements IGames {
                 //获取触坐标
                 int x = (int) event.getX();
                 int y = (int) event.getY();
+
+                if (x < 0 || x > mPanelWidth || y < 0 || y > mPanelWidth) {//当手指离开时在棋盘外面，不做反应
+                    break;
+                }
 
                 //将像素坐标转换为棋盘坐标，方向与手机像素坐标一直，并封装成坐标点
                 x = (int) (x / mGridWidth);
